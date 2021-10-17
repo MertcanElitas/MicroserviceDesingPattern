@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Order.API.Consumers;
 using Order.API.Models;
 using System;
 using System.Collections.Generic;
@@ -34,30 +33,12 @@ namespace Order.API
             services.AddControllers();
             services.AddMassTransit(x =>
             {
-                x.AddConsumer<PaymentCompletedEventConsumer>();
-                x.AddConsumer<PaymentFailedEventConsumer>();
-                x.AddConsumer<StockNotReservedEventConsumer>();
                 x.UsingRabbitMq((context, configure) =>
                 {
                     configure.Host(Configuration["RabbitMQ:Url"], "/", host =>
                     {
                         host.Username(Configuration["RabbitMQ:Username"]);
                         host.Password(Configuration["RabbitMQ:Password"]);
-                    });
-
-                    configure.ReceiveEndpoint(RabbitMQConstants.OrderPaymentSuccessededEventQueueName, cfg =>
-                    {
-                        cfg.ConfigureConsumer<PaymentCompletedEventConsumer>(context);
-                    });
-
-                    configure.ReceiveEndpoint(RabbitMQConstants.OrderPaymentFailEventQueueName, cfg =>
-                    {
-                        cfg.ConfigureConsumer<PaymentFailedEventConsumer>(context);
-                    });
-
-                    configure.ReceiveEndpoint(RabbitMQConstants.OrderStockNotReservedEventQueueName, cfg =>
-                    {
-                        cfg.ConfigureConsumer<StockNotReservedEventConsumer>(context);
                     });
                 });
             });

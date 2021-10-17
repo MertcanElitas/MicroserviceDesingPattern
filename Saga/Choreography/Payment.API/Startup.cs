@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Payment.API.Consumers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,18 +33,12 @@ namespace Payment.API
 
             services.AddMassTransit(x =>
             {
-                x.AddConsumer<StockReservedEventConsumer>();
                 x.UsingRabbitMq((context, configure) =>
                 {
                     configure.Host(Configuration["RabbitMQ:Url"], "/", host =>
                     {
                         host.Username(Configuration["RabbitMQ:Username"]);
                         host.Password(Configuration["RabbitMQ:Password"]);
-                    });
-
-                    configure.ReceiveEndpoint(RabbitMQConstants.StockReserverdEventQueueName, cnf =>
-                    {
-                        cnf.ConfigureConsumer<StockReservedEventConsumer>(context);
                     });
                 });
 
