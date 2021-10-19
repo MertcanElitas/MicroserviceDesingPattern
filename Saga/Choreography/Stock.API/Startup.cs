@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Stock.API.Consumers;
 using Stock.API.Models;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace Stock.API
 
             services.AddMassTransit(x =>
             {
+                x.AddConsumer<OrderCreatedEventConsumer>();
                 x.UsingRabbitMq((context, configure) =>
                 {
                     configure.Host(Configuration["RabbitMQ:Url"], "/", host =>
@@ -42,7 +44,13 @@ namespace Stock.API
                         host.Username(Configuration["RabbitMQ:Username"]);
                         host.Password(Configuration["RabbitMQ:Password"]);
                     });
+
+                    configure.ReceiveEndpoint(RabbitMQConstants.StockOrderCreatedEventQueueName, e =>
+                    {
+                        e.ConfigureConsumer<OrderCreatedEventConsumer>(context);
+                    });
                 });
+
 
             });
 

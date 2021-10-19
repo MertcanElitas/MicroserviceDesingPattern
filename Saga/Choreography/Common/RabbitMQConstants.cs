@@ -17,5 +17,12 @@ namespace Common
         public const string OrderPaymentSuccessededEventQueueName = "order-payment-successed-queue";
         public const string OrderPaymentFailEventQueueName = "order-payment-fail-queue";
         public const string OrderStockNotReservedEventQueueName = "order-stocknotreserved-queue";
+
+
+        #region " Orchestrator "
+
+        public const string OrderSaga = "order-saga";
+
+        #endregion
     }
 }

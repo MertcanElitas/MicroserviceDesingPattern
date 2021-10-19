@@ -5,18 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common
+namespace Common.Events
 {
-    public class OrderCreatedEvent : IOrderCreatedEvent
+    public class OrderCreatedRequestEvent : IOrderCreatedRequestEvent
     {
-        public OrderCreatedEvent(Guid correlationId)
+        public OrderCreatedRequestEvent()
         {
             OrderItems = new List<OrderItemMessage>();
-            CorrelationId = correlationId;
         }
 
+        public int OrderId { get; set; }
+        public string BuyerId { get; set; }
         public List<OrderItemMessage> OrderItems { get; set; }
-
-        public Guid CorrelationId { get; }
+        public PaymentMessage PaymentMessage { get; set; }
     }
 }

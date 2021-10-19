@@ -1,4 +1,6 @@
 ﻿using Common;
+using Common.Events;
+using Common.Interfaces;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,12 +18,12 @@ namespace Order.API.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly AppDbContext _context;
-        private readonly IPublishEndpoint _publishEndPoint;
+        private readonly ISendEndpointProvider _sendEndpointProvider;
 
-        public OrdersController(AppDbContext context, IPublishEndpoint publishEndPoint)
+        public OrdersController(AppDbContext context, ISendEndpointProvider sendEndpointProvider)
         {
             _context = context;
-            _publishEndPoint = publishEndPoint;
+            _sendEndpointProvider = sendEndpointProvider;
         }
 
         [HttpPost]
@@ -48,11 +50,11 @@ namespace Order.API.Controllers
             await _context.Orders.AddAsync(newOrder);
             await _context.SaveChangesAsync();
 
-            var orderCreatedEvent = new OrderCreatedEvent()
+            var orderCreatedRequestEvent = new OrderCreatedRequestEvent()
             {
                 BuyerId = dto.BuyerId,
                 OrderId = newOrder.Id,
-                Payment = new PaymentMessage()
+                PaymentMessage = new PaymentMessage()
                 {
                     CardName = dto.Payment.CardName,
                     CardNumber = dto.Payment.CardNumber,
@@ -67,7 +69,9 @@ namespace Order.API.Controllers
                 }).ToList()
             };
 
-            await _publishEndPoint.Publish(orderCreatedEvent);
+            var sendProvider = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{RabbitMQConstants.OrderSaga}"));
+
+            await sendProvider.Send<IOrderCreatedRequestEvent>(orderCreatedRequestEvent);
 
             return Ok();
         }
