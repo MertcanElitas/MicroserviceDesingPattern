@@ -7,18 +7,15 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-    public class PaymentFailedEvent : IPaymentFailedEvent
+    public class OrderRequestFailedEvent : IOrderRequestFailedEvent
     {
-        public PaymentFailedEvent(Guid correlationId)
+        public OrderRequestFailedEvent(Guid correlationId)
         {
             CorrelationId = correlationId;
-            OrderItemMessages = new List<OrderItemMessage>();
         }
 
-
+        public int OrderId { get; set; }
         public string Reason { get; set; }
-
-        public List<OrderItemMessage> OrderItemMessages { get; set; }
 
         public Guid CorrelationId { get; }
     }

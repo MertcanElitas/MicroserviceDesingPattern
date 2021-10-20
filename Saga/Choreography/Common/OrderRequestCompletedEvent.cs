@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-    public class PaymentSuccessedEvent : IPaymentCompletedEvent
+    public class OrderRequestCompletedEvent : IOrderRequestCompletedEvent
     {
-        public PaymentSuccessedEvent(Guid correlationId)
+        public OrderRequestCompletedEvent(Guid correlationId)
         {
             CorrelationId = correlationId;
         }
+
+        public int OrderId { get; set; }
 
         public Guid CorrelationId { get; }
     }

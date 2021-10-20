@@ -7,19 +7,18 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-    public class PaymentFailedEvent : IPaymentFailedEvent
+    public class StockReservedPaymentRequest : IStockReservedRequestPayment
     {
-        public PaymentFailedEvent(Guid correlationId)
+        public StockReservedPaymentRequest(Guid correlationId)
         {
             CorrelationId = correlationId;
             OrderItemMessages = new List<OrderItemMessage>();
         }
 
+        public string BuyerId { get; set; }
+        public Guid CorrelationId { get; set; }
 
-        public string Reason { get; set; }
-
+        public PaymentMessage Payment { get; set; }
         public List<OrderItemMessage> OrderItemMessages { get; set; }
-
-        public Guid CorrelationId { get; }
     }
 }

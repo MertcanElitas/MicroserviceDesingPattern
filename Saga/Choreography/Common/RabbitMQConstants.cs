@@ -22,6 +22,10 @@ namespace Common
         #region " Orchestrator "
 
         public const string OrderSaga = "order-saga";
+        public const string PaymentStockReservedRequestQueueName = "payment-stock-reserved-request-queue";
+        public const string OrderCompletedRequestQueueName = "order-completed-request-queue";
+        public const string OrderStockNotReservedEventRequestQueueName = "order-stock-not-reserved-queue";
+        public const string StockRollBackMessageQueueName = "stock-rollback-queue";
 
         #endregion
     }
