@@ -13,5 +13,11 @@ namespace Common
         public string Expiration { get; set; }
         public string CVV { get; set; }
         public decimal TotalPrice { get; set; }
+
+
+
+        public string varone { get; set; }
+        public string vartwo { get; set; }
+
     }
 }

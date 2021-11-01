@@ -10,5 +10,7 @@ namespace Common
     {
         public string BuyerId { get; set; }
         public int OrderId { get; set; }
+
+        public string successtwo { get; set; }
     }
 }
