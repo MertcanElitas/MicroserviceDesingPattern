@@ -22,5 +22,8 @@ namespace Common
         public string varthree { get; set; }
         public string varfour { get; set; }
 
+        public string varfive { get; set; }
+        public string varsix { get; set; }
+
     }
 }
