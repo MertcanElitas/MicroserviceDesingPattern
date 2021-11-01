@@ -19,5 +19,8 @@ namespace Common
         public string varone { get; set; }
         public string vartwo { get; set; }
 
+        public string varthree { get; set; }
+        public string varfour { get; set; }
+
     }
 }

@@ -12,5 +12,6 @@ namespace Common
         public int OrderId { get; set; }
 
         public string successtwo { get; set; }
+        public string successthree { get; set; }
     }
 }
