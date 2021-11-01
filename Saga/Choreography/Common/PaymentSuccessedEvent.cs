@@ -14,5 +14,6 @@ namespace Common
         public string successtwo { get; set; }
         public string successthree { get; set; }
         public string successfour { get; set; }
+        public string successfive { get; set; }
     }
 }
