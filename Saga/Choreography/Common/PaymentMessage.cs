@@ -22,11 +22,14 @@ namespace Common
         public string varthree { get; set; }
         public string varfour { get; set; }
 
+<<<<<<< HEAD
         public string varfive { get; set; }
         public string varsix { get; set; }
 
         public string varseven { get; set; }
         public string vareight { get; set; }
 
+=======
+>>>>>>> parent of fb21bb3 (com-three)
     }
 }
