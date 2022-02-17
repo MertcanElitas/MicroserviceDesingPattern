@@ -5,7 +5,7 @@ namespace Common
 {
     public class MyClassTwo
     {
-        public string nnnnn { get; set; }
-        public string mmmmm { get; set; }
+        public string tttt { get; set; }
+        public string vvvv { get; set; }
     }
 }
