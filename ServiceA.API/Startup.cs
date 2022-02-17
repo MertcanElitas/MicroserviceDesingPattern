@@ -51,6 +51,8 @@ namespace ServiceA.API
                     Console.WriteLine($"Retry count:{retryAttempt}");
                     return TimeSpan.FromSeconds(10);
                 }, onRetryAsync: onRetryAsync);
+
+            //Test
         }
 
         public Task onRetryAsync(DelegateResult<HttpResponseMessage> arg1, TimeSpan arg2)
