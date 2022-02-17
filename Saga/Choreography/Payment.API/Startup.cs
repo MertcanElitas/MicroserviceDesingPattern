@@ -41,6 +41,7 @@ namespace Payment.API
                     {
                         host.Username(Configuration["RabbitMQ:Username"]);
                         host.Password(Configuration["RabbitMQ:Password"]);
+
                     });
 
                     configure.ReceiveEndpoint(RabbitMQConstants.StockReserverdEventQueueName, cnf =>
