@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -42,6 +43,37 @@ namespace ServiceA.API
             }).AddPolicyHandler(GetRetryPolicy());
         }
 
+        //CircuitBraker'ın daha az gelişmiş versiyonu.
+        //Aşağıdaki configurasyona göre uygulama 3 hatalı request ten sonra
+        //10 sn boyunca açık devre şekline girerek reuqesti atmadan hata mesajı döner.
+        //10 sn bittikten sonra 1 request atar eğer yine başarısız ise tekrar 10 sn açık devre haline döner.
+        private IAsyncPolicy<HttpResponseMessage> GetCircuitBraker()
+        {
+            return HttpPolicyExtensions.HandleTransientHttpError()
+                .CircuitBreakerAsync(3
+                    , TimeSpan.FromSeconds(10)
+                    ,onBreak:(arg1,arg2)=>{ Debug.WriteLine("Circuit Braker Status => On Break"); }
+                    ,onReset:()=>{ Debug.WriteLine("Circuit Braker Status => On Braker Reset"); }
+                    ,onHalfOpen:()=>{ Debug.WriteLine("Circuit Braker Status => On Braker Half Open"); });
+        }
+
+        //CircuitBraker'ın advence versiyonu.
+        //Aşağıdaki configurasyona göre uygulama 30 saniye boyunca hata alınan istekleri sayar.
+        //Hata alan istekler toplam istek sayısının Yüzde 10'nundan fazla ise ve hata alan istek sayısı
+        //5 den büyük ise 10 saniye boyunca uygulama açık devre haline geçer. 10 sn'den sonra hatalı 1 istek alırsa
+        //tekrar açık devre hale geçer.
+        public IAsyncPolicy<HttpResponseMessage> GetAdvenceCircuitBraker()
+        {
+            return HttpPolicyExtensions.HandleTransientHttpError()
+                .AdvancedCircuitBreakerAsync(0.1, //Hatalı istekler yüzde 10 ve fazlası ise
+                    TimeSpan.FromSeconds(30), // 30 saniye boyunca gelen istekleri takip eder.
+                    5, //Hatalı istek sayısı 5 ten fazla ise
+                    TimeSpan.FromSeconds(10)  //10 sn boyunca açık devre haline geçer.
+                    , onBreak: (arg1, arg2) => { Debug.WriteLine("Circuit Braker Status => On Break"); }
+                    , onReset: () => { Debug.WriteLine("Circuit Braker Status => On Braker Reset"); }
+                    , onHalfOpen: () => { Debug.WriteLine("Circuit Braker Status => On Braker Half Open"); } );
+        }
+
         private IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
         {
            return  HttpPolicyExtensions.HandleTransientHttpError()
@@ -51,10 +83,6 @@ namespace ServiceA.API
                     Console.WriteLine($"Retry count:{retryAttempt}");
                     return TimeSpan.FromSeconds(10);
                 }, onRetryAsync: onRetryAsync);
-
-
-
-            
         }
 
         public Task onRetryAsync(DelegateResult<HttpResponseMessage> arg1, TimeSpan arg2)
